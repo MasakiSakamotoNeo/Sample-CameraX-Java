@@ -32,12 +32,14 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
+    // 定数
     private static final String TAG = "CameraX";
     private static final String FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS";
     private static final int REQUEST_CODE_PERMISSIONS = 10;
     private static final List<String> REQUIRED_PERMISSIONS =
             Collections.singletonList(Manifest.permission.CAMERA);
 
+    // 変数
     private ImageCapture imageCapture = null;
     private PreviewView previewView;
     private ExecutorService cameraExecutor;
@@ -52,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
         // カメラ権限の確認
         if (allPermissionsGranted()) {
+            // 全て権限付与済の場合はカメラの処理を開始する
             startCamera();
         } else {
+            // 権限が付与されていない場合は、付与の為のリクエストをユーザーに依頼する
             String[] str = new String[REQUIRED_PERMISSIONS.size()];
             String[] array = REQUIRED_PERMISSIONS.toArray(str);
             ActivityCompat.requestPermissions(
@@ -92,15 +96,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // 依頼した権限リクエストからの戻りか確認する
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            startCamera();
-        } else {
-            Toast.makeText(
-                    this,
-                    "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT
-            ).show();
-            finish();
+            // 権限が全て付与されたか確認する
+            if (allPermissionsGranted()) {
+                // 全て権限付与済の場合はカメラの処理を開始する
+                startCamera();
+            } else {
+                // 権限が付与されていない場合は、Toastでメッセージを表示する
+                Toast.makeText(
+                        this,
+                        "Permissions not granted by the user.",
+                        Toast.LENGTH_SHORT
+                ).show();
+                finish();
+            }
         }
     }
 
@@ -119,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
+                // ImageCaptureインスタンスを生成する
+                imageCapture = new ImageCapture.Builder().build();
+
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
                 cameraProvider.unbindAll();
@@ -128,8 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "Use case binding failed.");
             }
         }, ContextCompat.getMainExecutor(this));
-        // ImageCaptureインスタンスを生成する
-        imageCapture = new ImageCapture.Builder().build();
     }
 
     private void takePhoto() {
