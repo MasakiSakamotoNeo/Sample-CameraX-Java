@@ -2,8 +2,17 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.CameraX" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- FloatingActionButtonのスタイルを設定 -->
+        <item name="floatingActionButtonStyle">@style/FloatingActionButtonStyle</item>
     </style>
 
     <style name="Theme.CameraX" parent="Base.Theme.CameraX" />
+
+    <style name="FloatingActionButtonStyle" parent="Widget.Design.FloatingActionButton">
+        <item name="shapeAppearanceOverlay">@style/FabShapeStyle</item>
+    </style>
+
+    <style name="FabShapeStyle" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
